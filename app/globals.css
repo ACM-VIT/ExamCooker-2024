@@ -25,7 +25,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
-
+.box-shadow-black {
+  box-shadow: 2px 2px 10px 0px black;
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;

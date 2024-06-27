@@ -1,7 +1,7 @@
 //All of the following code is dummy, boilerplate. Replace with relevant material.
 
 // components/SearchComponent.tsx
-import React from 'react';
+/*import React from 'react';
 
 const SearchBar: React.FC = () => {
   return (
@@ -17,3 +17,22 @@ const SearchBar: React.FC = () => {
 };
 
 export default SearchBar;
+*/
+// components/SearchBar.tsx
+import React from 'react';
+
+const SearchBar: React.FC = () => {
+  return (
+    <div className="relative flex items-center w-full max-w-lg">
+      <input
+        type="text"
+        placeholder="Search"
+        className="w-full p-2 border-0 outline-none text-black shadow-lg rounded-none focus:ring-0"
+      />
+      <div className="absolute top-0 left-0 w-full h-full bg-grey pointer-events-none box-shadow-black"></div>
+    </div>
+  );
+};
+
+export default SearchBar;
+
