@@ -40,7 +40,6 @@ const CreateForum: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation for required fields
     if (!title || !year || !subject || !slot) {
       let errorMessage = 'Please fill in the following fields:\n';
       if (!title) errorMessage += '- Title\n';
@@ -52,12 +51,17 @@ const CreateForum: React.FC = () => {
       return;
     }
 
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('year', year);
+    formData.append('subject', subject);
+    formData.append('slot', slot);
+    formData.append('description', description);
+    tags.forEach(tag => formData.append('tags[]', tag));
+
     const response = await fetch('/api/createForum', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title, year, subject, slot, description, tags }),
+      body: formData,
     });
 
     if (response.ok) {
@@ -68,65 +72,19 @@ const CreateForum: React.FC = () => {
     }
   };
 
-  const getInputStyle = (value: string) => ({
-    padding: '5px',
-    border: value ? '1px solid #D3D3D3' : '1px dotted #D3D3D3',
-    width: '100%',
-    color: '#000',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-  });
-
-  const getYSSInputStyle = (value: string) => ({
-    padding: '5px',
-    border: value ? '1px solid #D3D3D3' : '1px dotted #D3D3D3',
-    width: '100%',
-    color: '#000',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-  });
-
-  const getTextAreaStyle = (value: string) => ({
-    padding: '5px',
-    border: value ? '1px solid #D3D3D3' : '1px dotted #D3D3D3',
-    width: '100%',
-    color: '#000',
-    fontSize: '0.8rem',
-    minHeight: '150px',
-  });
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <button
-            className="duration-300 hover:bg-teal-600"
+            className="text-teal-500 border-2 border-teal-500 rounded-lg flex items-center justify-center p-1 font-bold duration-300 hover:bg-teal-600"
             onClick={() => router.back()}
-            style={{
-              color: '#3BF3C7',
-              padding: '3px 5px',
-              border: '3px solid #3BF3C7',
-              cursor: 'pointer',
-              display: 'flex',
-              borderRadius: '7px',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 'bold',
-            }}
           >
-            <span style={{ marginRight: '0px' }}>&larr;</span>
+            <span className="mr-0">&larr;</span>
           </button>
           <button
-            className="duration-300 bg-teal-400 hover:bg-teal-500"
+            className="bg-teal-400 text-black p-2 px-4 border-2 border-black rounded font-bold duration-300 hover:bg-teal-500"
             onClick={handleSubmit}
-            style={{
-              color: '#000000',
-              padding: '7px 15px',
-              border: '2px solid #000000',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-            }}
           >
             Post
           </button>
@@ -136,7 +94,7 @@ const CreateForum: React.FC = () => {
             <input
               type="text"
               placeholder="Title"
-              style={getInputStyle(title)}
+              className="w-full p-2 border text-lg font-bold text-black border-dotted focus:border-solid"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -147,7 +105,7 @@ const CreateForum: React.FC = () => {
               <input
                 type="text"
                 placeholder="Year"
-                style={getYSSInputStyle(year)}
+                className="w-full p-2 border text-base font-bold text-black border-dotted focus:border-solid"
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
                 required
@@ -157,7 +115,7 @@ const CreateForum: React.FC = () => {
               <input
                 type="text"
                 placeholder="Subject"
-                style={getYSSInputStyle(subject)}
+                className="w-full p-2 border text-base font-bold text-black border-dotted focus:border-solid"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 required
@@ -165,17 +123,7 @@ const CreateForum: React.FC = () => {
             </div>
             <div>
               <select
-                style={{
-                  padding: '7px',
-                  width: '65%',
-                  color: '#000',
-                  borderRadius: '8px',
-                  backgroundColor: '#87CEEB',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.3s',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#5DADE2')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#87CEEB')}
+                className="p-2 w-2/3 bg-blue-300 text-black rounded-lg cursor-pointer transition duration-300 hover:bg-blue-400"
                 value={slot}
                 onChange={(e) => setSlot(e.target.value)}
                 required
@@ -190,24 +138,24 @@ const CreateForum: React.FC = () => {
           <div className="mb-4">
             <textarea
               placeholder="Thread Description"
-              style={getTextAreaStyle(description)}
+              className="w-full p-2 border text-sm text-black border-dotted focus:border-solid min-h-[150px]"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
             />
           </div>
           <div className="mb-4">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center mb-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-block text-gray-700 rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2"
+                  className="inline-block text-gray-700 px-3 py-1 text-sm font-semibold mr-2 mb-2"
                 >
-                  #{tag}{' '}
+                  #{tag}
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(tag)}
-                    style={{ marginLeft: '5px' }}
+                    className="ml-1"
                   >
                     &times;
                   </button>
@@ -217,7 +165,7 @@ const CreateForum: React.FC = () => {
                 <input
                   type="text"
                   autoFocus
-                  style={getInputStyle(newTag)}
+                  className="p-2 border text-lg font-bold text-black border-dotted focus:border-solid"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -226,16 +174,7 @@ const CreateForum: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleAddTagClick}
-                  className="duration-300 bg-white hover:bg-blue-300"
-                  style={{
-                    color: '#3BF3C7',
-                    padding: '5px 10px',
-                    border: '3px solid #3BF3C7',
-                    borderRadius: '7px',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer',
-                    marginLeft: tags.length > 0 ? '10px' : '0px',
-                  }}
+                  className="bg-white text-teal-500 p-1 px-2 border-2 border-teal-500 rounded-lg text-sm cursor-pointer transition duration-300 hover:bg-blue-300"
                 >
                   Add tag
                 </button>
