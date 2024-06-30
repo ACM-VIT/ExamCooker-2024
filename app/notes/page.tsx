@@ -4,7 +4,8 @@ import NotesCard from '../components/NotesCard'
 import FilterComponent from '../components/FilterComponent'
 import SearchBar from '../components/SearchBar'
 import Link from 'next/link'
-
+import NewForumButton from '../components/NewForumButton';
+import CreateForum from '../components/create-forum'
 
 const notesPage = () => {
   return (
@@ -21,7 +22,12 @@ const notesPage = () => {
             {/* Other content of your page */}
         </div>
 
-
+        {/* NewForumButton */}
+        <div className = "NewForumButtom">
+            <h1>Welcome to the Forum</h1>
+            <NewForumButton />
+            
+        </div>
 
         {/* notescard */}
         <div className="container mx-auto p-4 flex justify-center">
@@ -59,6 +65,8 @@ const notesPage = () => {
 
         {/* pagination */}
         <Pagination currentPage={1} totalPages={69}></Pagination>
+
+        
     </div>
   )
 }
