@@ -1,6 +1,7 @@
 import React from "react";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ClientProvider } from "./components/Provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
     title: "ExamCooker 2024",
@@ -20,6 +21,7 @@ export default function RootLayout({
                 <ClientProvider>
                     {children}
                 </ClientProvider>
+                <Toaster />
             </body>
         </html>
     );

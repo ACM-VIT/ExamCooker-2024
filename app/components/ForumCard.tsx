@@ -25,7 +25,7 @@ export default function ForumCard({ post, title, desc, author, tags, createdAt, 
     const dateTimeObj = TimeHandler(createdAt.toISOString());
 
     const handleToggleFav = () => {
-        void toggleFavorite({ id: post.id, type: 'forum' });
+        toggleFavorite({ id: post.id, type: 'forum' });
     };
 
     return (
