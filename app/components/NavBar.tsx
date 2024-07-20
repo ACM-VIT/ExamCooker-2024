@@ -122,7 +122,7 @@ const NavBar: React.FC<{ isNavOn: boolean; toggleNavbar: () => void }> = ({
                 </div>
                 <div />
                 <div className="mb-4 bottom-5 w-full">
-                    <Tooltip content="Logout">
+                    
                         <div
                             onClick={() => setIsExpanded(!isExpanded)}
                             className={`m-2 ${isNavOn ? "block" : "hidden"} ${!isExpanded ? "block" : "hidden"}`}
@@ -135,8 +135,8 @@ const NavBar: React.FC<{ isNavOn: boolean; toggleNavbar: () => void }> = ({
                                 className="dark:invert-[.835] transition-transform transform-gpu hover:scale-110 hover:-translate-y-1 hover:rotate-[-5deg]"
                             />
                         </div>
-                    </Tooltip>
-                    <Tooltip content="Logout">
+                    
+                    
                         <div
                             onClick={() => setIsExpanded(!isExpanded)}
                             className={`m-2 ${isNavOn ? "block" : "hidden"} ${isExpanded ? "block" : "hidden"}`}
@@ -149,7 +149,7 @@ const NavBar: React.FC<{ isNavOn: boolean; toggleNavbar: () => void }> = ({
                                 className="dark:invert-[.835] transition-transform transform-gpu -rotate-180 hover:scale-110 hover:-translate-y-1 hover:-rotate-[175deg]"
                             />
                         </div>
-                    </Tooltip>
+                    
                 </div>
             </nav>
         </>
