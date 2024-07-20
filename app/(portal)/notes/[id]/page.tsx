@@ -36,7 +36,7 @@ async function PdfViewerPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden text-black dark:text-[#D5D5D5] transition-colors duration-200">
       <div className="lg:w-1/2 p-8 flex flex-col justify-center overflow-none">
         <h1 className="text-3xl font-bold mb-4 truncate">{removePdfExtension(note.title)}</h1>
         <div className="space-y-2 overflow-y-auto">
@@ -45,7 +45,7 @@ async function PdfViewerPage({ params }: { params: { id: string } }) {
           <p className="text-lg"><span className="font-semibold">Author:</span> {note.author?.name || 'Unknown'}</p>
         </div>
       </div>
-      <div className="w-full lg:w-1/2 lg:border-l lg:border-black-900 lg:dark:border-[#d5d5d5] lg:overflow-hidden p-4">
+      <div className="w-full lg:w-1/2 lg:border-l lg:border-black lg:dark:border-[#d5d5d5] lg:overflow-hidden p-4">
         <div className="h-full">
           <PDFViewer fileUrl={note.fileUrl} />
         </div>
