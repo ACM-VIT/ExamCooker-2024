@@ -52,30 +52,12 @@ const Home: React.FC = () => {
                                 <NotesCard
                                     key={note.id}
                                     index={index}
-                                    note={note}
+                                    note={note} //DUMMY DATA
                                     className="w-full"
                                 />
                             ))}
                         </div>
                     </section>
-
-                    {/* <section>
-                    <div className="flex items-center justify-center text-xl sm:text-2xl font-bold mb-6 pt-4">
-                        <div className="flex-grow border-t border-black dark:border-[#D5D5D5] "></div>
-                        <span className="mx-4">Favourites</span>
-                        <div className="flex-grow border-t border-black dark:border-[#D5D5D5]"></div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
-                            {notes.map((note, index) => (
-                                <NotesCard
-                                    key={note.id}
-                                    index={index}
-                                    note={note}
-                                    className="w-full"
-                                />
-                            ))}
-                        </div>
-                    </section> */}
                 </main>
             </div>
         </div>
