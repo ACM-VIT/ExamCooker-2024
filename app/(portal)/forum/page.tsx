@@ -1,12 +1,13 @@
 import React from 'react';
 import Fuse from 'fuse.js';
-import { PrismaClient, ForumPost, Tag, Comment, User } from "@prisma/client";
+import { PrismaClient, ForumPost, Tag, Comment, User, Vote, VoteType } from "@prisma/client";
 import { redirect } from 'next/navigation';
 import Pagination from "../../components/Pagination";
 import ForumCard from "../../components/ForumCard";
 import SearchBar from "../../components/SearchBar";
 import Dropdown from "../../components/FilterComponent";
 import NewForumButton from "../../components/NewForumButton";
+import { auth } from "@/app/auth";
 
 const SCORE_THRESHOLD = 0.8;
 
@@ -14,6 +15,7 @@ type ForumPostWithDetails = ForumPost & {
   author: User;
   tags: Tag[];
   comments: (Comment & { author: User })[];
+  votes: Vote[];
 };
 
 function validatePage(page: number, totalPages: number): number {
@@ -62,6 +64,8 @@ function performSearch(query: string, dataSet: ForumPostWithDetails[]) {
 
 async function forum({ searchParams }: { searchParams: { page?: string, search?: string, tags?: string | string[] } }) {
   const prisma = new PrismaClient();
+  const session = await auth();
+  const userId = session?.user?.id;
   const pageSize = 5;
   const search = searchParams.search || '';
   const page = parseInt(searchParams.page || '1', 10);
@@ -84,6 +88,11 @@ async function forum({ searchParams }: { searchParams: { page?: string, search?:
     include: {
       author: true,
       tags: true,
+      votes: {
+        where: {
+          userId: userId
+        }
+      },
       comments: {
         include: {
           author: true,
@@ -136,18 +145,26 @@ async function forum({ searchParams }: { searchParams: { page?: string, search?:
       <div className="w-full mx-auto">
         {paginatedForumPosts.length > 0 ? (
           <div className="space-y-4">
-            {paginatedForumPosts.map((eachPost) => (
-              <ForumCard
-                key={eachPost.id}
-                title={eachPost.title}
-                author={eachPost.author.name || 'Unknown'}
-                desc={eachPost.description || 'No description available'}
-                createdAt={eachPost.createdAt}
-                tags={eachPost.tags}
-                post={eachPost}
-                comments={eachPost.comments}
-              />
-            ))}
+            {paginatedForumPosts.map((eachPost) => {
+              const userVote = eachPost.votes[0];
+              return (
+                <ForumCard
+                  key={eachPost.id}
+                  post={{
+                    ...eachPost,
+                    upvoteCount: eachPost.upvoteCount,
+                    downvoteCount: eachPost.downvoteCount,
+                    userVote: userVote ? userVote.type as VoteType : null
+                  }}
+                  title={eachPost.title}
+                  desc={eachPost.description || 'No description available'}
+                  author={eachPost.author.name || 'Unknown'}
+                  tags={eachPost.tags}
+                  createdAt={eachPost.createdAt}
+                  comments={eachPost.comments}
+                />
+              );
+            })}
           </div>
         ) : (
           <p className="text-center py-8">

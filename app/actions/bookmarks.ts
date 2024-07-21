@@ -22,7 +22,13 @@ export async function getBookmarks(): Promise<Bookmark[]> {
         include: {
             bookmarkedNotes: true,
             bookmarkedPastPapers: true,
-            bookmarkedForumPosts: true,
+            bookmarkedForumPosts: {
+                include: {
+                    votes: {
+                        where: { userId: session.user.id }
+                    }
+                }
+            },
             bookmarkedResources: true,
         },
     });
@@ -32,7 +38,14 @@ export async function getBookmarks(): Promise<Bookmark[]> {
     return [
         ...user.bookmarkedNotes.map(note => ({ id: note.id, type: 'note' as const, title: note.title })),
         ...user.bookmarkedPastPapers.map(paper => ({ id: paper.id, type: 'pastpaper' as const, title: paper.title })),
-        ...user.bookmarkedForumPosts.map(post => ({ id: post.id, type: 'forumpost' as const, title: post.title })),
+        ...user.bookmarkedForumPosts.map(post => ({
+            id: post.id,
+            type: 'forumpost' as const,
+            title: post.title,
+            upvoteCount: post.upvoteCount,
+            downvoteCount: post.downvoteCount,
+            userVote: post.votes[0]?.type || null
+        })),
         ...user.bookmarkedResources.map(resource => ({ id: resource.id, type: 'subject' as const, title: resource.name })),
     ];
 }

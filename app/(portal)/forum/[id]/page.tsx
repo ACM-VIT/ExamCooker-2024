@@ -1,9 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import ForumPost from "./ForumPost";
+import ForumPostPage from "./ForumPost";
 import { auth } from "@/app/auth";
 import { recordViewHistory } from "@/app/actions/viewHistory";
+import { notFound } from "next/navigation";
 
 async function forumPostThread({ params }: { params: { id: string } }) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) {
+    throw new Error('User not found');
+  }
 
   const prisma = new PrismaClient();
   const forumpost = await prisma.forumPost.findUnique({
@@ -16,6 +22,11 @@ async function forumPostThread({ params }: { params: { id: string } }) {
           name: true,
         }
       },
+      votes: {
+        where: {
+          userId: userId
+        }
+      },
       tags: true,
       comments: {
         include: {
@@ -25,20 +36,26 @@ async function forumPostThread({ params }: { params: { id: string } }) {
     },
   });
   if (!forumpost) {
-    throw new Error('Forum post not found');
+    return notFound();
   }
-
-  const session = await auth();
-  const userId = session?.user?.id;
 
   if (userId) {
     await recordViewHistory('forumPost', forumpost.id, userId);
   }
 
+  const userVote = forumpost.votes[0];
+  const initialLikeStatus = userVote?.type === 'UPVOTE';
+  const initialDislikeStatus = userVote?.type === 'DOWNVOTE';
 
   return (
-    <ForumPost post={forumpost} tagArray={forumpost?.tags} commentArray={forumpost?.comments} />
-  )
+    <ForumPostPage
+      post={forumpost}
+      tagArray={forumpost?.tags}
+      commentArray={forumpost?.comments}
+      initialLikeStatus={initialLikeStatus}
+      initialDislikeStatus={initialDislikeStatus}
+    />
+  );
 }
 
 export default forumPostThread;

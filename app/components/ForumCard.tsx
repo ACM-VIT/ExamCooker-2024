@@ -1,16 +1,20 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { NumberOfComments, TimeHandler } from "@/app/components/forumpost/CommentContainer";
 import TagContainer from "@/app/components/forumpost/TagContainer";
 import { DislikeButton, LikeButton } from "@/app/components/common/Buttons";
-import { ForumPost, Tag, Comment } from "@prisma/client";
+import { ForumPost, Tag, Comment, VoteType } from "@prisma/client";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import Link from "next/link";
 import { useBookmarks } from './BookmarksProvider';
 
 interface ForumCardProps {
-    post: ForumPost;
+    post: ForumPost & {
+        upvoteCount?: number;
+        downvoteCount?: number;
+        userVote?: 'UPVOTE' | 'DOWNVOTE' | null;
+    };
     title: string;
     desc: string;
     author: string | null;
@@ -20,7 +24,7 @@ interface ForumCardProps {
 }
 
 export default function ForumCard({ post, title, desc, author, tags, createdAt, comments }: ForumCardProps) {
-    const dateTimeObj = TimeHandler(createdAt.toISOString());
+    const dateTimeObj = createdAt ? TimeHandler(createdAt.toISOString()) : TimeHandler(new Date().toISOString());
 
     const { isBookmarked, toggleBookmark } = useBookmarks();
 
@@ -30,6 +34,13 @@ export default function ForumCard({ post, title, desc, author, tags, createdAt, 
         toggleBookmark({ id: post.id, type: 'forumpost', title: post.title }, !isFav);
     };
 
+    const initialLikeStatus = post.userVote === 'UPVOTE';
+    const initialDislikeStatus = post.userVote === 'DOWNVOTE';
+
+    const [upvoteCount, setUpvoteCount] = useState(post.upvoteCount || 0);
+    const [downvoteCount, setDownvoteCount] = useState(post.downvoteCount || 0);
+    const [isLiked, setIsLiked] = useState(initialLikeStatus);
+    const [isDisliked, setIsDisliked] = useState(initialDislikeStatus);
 
     return (
         <div className="w-full flex pl-11 pr-7 pt-7 justify-center text-black dark:text-[#D5D5D5] ">
@@ -43,8 +54,22 @@ export default function ForumCard({ post, title, desc, author, tags, createdAt, 
                             <NumberOfComments commentArray={comments} />
                         </div>
                         <div className="flex space-x-2 p-0.5 bg-white dark:bg-[#3F4451]">
-                            <LikeButton postId={post.id} upvoteCount={post.upvoteCount} />
-                            <DislikeButton postId={post.id} downvoteCount={post.downvoteCount} />
+                            <LikeButton
+                                postId={post.id}
+                                initialVoteStatus={isLiked}
+                                initialVoteCount={upvoteCount}
+                                oppositeVoteCount={downvoteCount}
+                                setOppositeVoteCount={setDownvoteCount}
+                                setOppositeVoteStatus={setIsDisliked}
+                            />
+                            <DislikeButton
+                                postId={post.id}
+                                initialVoteStatus={isDisliked}
+                                initialVoteCount={downvoteCount}
+                                oppositeVoteCount={upvoteCount}
+                                setOppositeVoteCount={setUpvoteCount}
+                                setOppositeVoteStatus={setIsLiked}
+                            />
                         </div>
                     </div>
                 </div>

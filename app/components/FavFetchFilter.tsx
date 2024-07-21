@@ -6,19 +6,61 @@ import PastPaperCard from './PastPaperCard';
 import ResourceCard from './ResourceCard';
 import ForumCard from './ForumCard';
 import { useRouter } from 'next/navigation';
+import { ForumPost, Tag, Comment, PastPaper, Note, Subject } from "@prisma/client";
+import { Bookmark } from '../actions/bookmarks';
 
-const FavFetch = ({ items, activeTab }: {
-  items: Array<{
-    id: string;
-    type: 'note' | 'pastpaper' | 'forumpost' | 'subject';
-    title: string;
-    [key: string]: any;
-  }>,
-  activeTab: string
-}) => {
+interface ForumPostItem extends Omit<ForumPost, 'upvoteCount' | 'downvoteCount'> {
+  type: 'forumpost';
+  author?: { name: string | null };
+  tags: Tag[];
+  comments: Comment[];
+  upvoteCount?: number;
+  downvoteCount?: number;
+  userVote?: 'UPVOTE' | 'DOWNVOTE' | null;
+}
+
+interface PastPaperItem extends Omit<PastPaper, 'type'> {
+  type: 'pastpaper';
+}
+
+interface NoteItem extends Omit<Note, 'type'> {
+  type: 'note';
+}
+
+interface SubjectItem extends Omit<Subject, 'type'> {
+  type: 'subject';
+}
+
+export function mapBookmarkToItem(bookmark: Bookmark): Item {
+  switch (bookmark.type) {
+    case 'forumpost':
+      return bookmark as ForumPostItem;
+    case 'note':
+      return bookmark as NoteItem;
+    case 'pastpaper':
+      return bookmark as PastPaperItem;
+    case 'subject':
+      return {
+        id: bookmark.id,
+        name: bookmark.title,
+        type: 'subject',
+      } as SubjectItem;
+    default:
+      throw new Error(`Unknown bookmark type: ${(bookmark as any).type}`);
+  }
+}
+
+type Item = PastPaperItem | NoteItem | SubjectItem | ForumPostItem;
+
+
+interface FavFetchProps {
+  items: Item[];
+  activeTab: string;
+}
+
+const FavFetch: React.FC<FavFetchProps> = ({ items, activeTab }) => {
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState(activeTab);
-
   useEffect(() => {
     setCurrentTab(activeTab);
   }, [activeTab]);
@@ -51,18 +93,23 @@ const FavFetch = ({ items, activeTab }: {
     if (currentTab === 'Forum') {
       return (
         <div className="flex flex-col gap-4 pt-6">
-          {filteredItems.map((item, index) => (
-            <ForumCard
-              key={item.id}
-              title={item.title}
-              author={item.author?.name}
-              desc={item.description}
-              createdAt={item.createdAt}
-              tags={item.tags}
-              post={item}
-              comments={item.comments}
-            />
-          ))}
+          {filteredItems.map((item) => {
+            if (item.type === 'forumpost') {
+              return (
+                <ForumCard
+                  key={item.id}
+                  post={item as ForumPost & { upvoteCount?: number; downvoteCount?: number; userVote?: 'UPVOTE' | 'DOWNVOTE' | null }}
+                  title={item.title}
+                  desc={item.description}
+                  author={item.author?.name || null}
+                  tags={item.tags}
+                  createdAt={item.createdAt}
+                  comments={item.comments}
+                />
+              );
+            }
+            return null;
+          })}
         </div>
       );
     }
