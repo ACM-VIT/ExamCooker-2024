@@ -43,7 +43,6 @@ const Header: React.FC<HeaderProps> = ({ toggleTheme, darkMode }) => {
     return (
         <header className="transition-colors bg-[#C2E6EC] dark:bg-[#0C1222] border-b border-b-[#82BEE9] dark:border-b-[#3BF4C7] flex flex-row-reverse">
             <div className="flex items-center text-right m-2 space-x-4 pr-2">
-                <ThemeToggleSwitch />
                 <div className="hidden sm:flex sm:flex-col mr-4 ml-4">
                     <p className="lg:text-lg font-medium text-gray-900 dark:text-[#D5D5D5]">
                         {session?.user?.name ? session.user.name.slice(0, -10) : ''}
@@ -70,25 +69,28 @@ const Header: React.FC<HeaderProps> = ({ toggleTheme, darkMode }) => {
                         />
                     </button>
                     {showOverlay && (
-                        <div
-                            ref={overlayRef}
-                            className="absolute top-full right-0 mt-2 p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-10"
-                        >
-                            <p className="mb-2 text-gray-900 dark:text-white text-left">
-                                Name: <br />
-                                {session?.user?.name ? session.user.name.slice(0, -10) : ''}
-                            </p>
-                            <p className="mb-2 text-gray-600 dark:text-gray-300 text-left">
-                                Email:
-                                <br /> {session?.user?.email}
-                            </p>
-                            <SignOut>
-                                <span className="text-red-500 hover:underline dark:text-red-400">
-                                    Logout
-                                </span>
-                            </SignOut>
-                        </div>
-                    )}
+    <div
+        ref={overlayRef}
+        className="absolute top-full right-0 mt-2 p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-10 w-fit"
+    >
+        <p className="mb-2 text-gray-900 dark:text-white text-left">
+            Name: <br />
+            {session?.user?.name ? session.user.name.slice(0, -10) : ''}
+        </p>
+        <p className="mb-4 text-gray-600 dark:text-gray-300 text-left">
+            Email:
+            <br /> {session?.user?.email}
+        </p>
+        <div className="flex justify-between items-center">
+            <ThemeToggleSwitch />
+            <SignOut>
+                <span className="text-red-500 hover:underline dark:text-red-400 cursor-pointer">
+                    Logout
+                </span>
+            </SignOut>
+        </div>
+    </div>
+)}
                 </div>
             </div>
         </header>

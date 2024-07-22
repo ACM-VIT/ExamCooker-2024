@@ -30,7 +30,7 @@ function ThemeToggleSwitch() {
             className="relative overflow-hidden flex items-center justify-center w-14 h-6 dark:bg-[#121B31] border-[1px] border-[#2699E9] dark:border-[#D5D5D5] rounded-full hover:border-1 hover:border-[#3BF4C7] dark:hover:border-[#3BF4C7] transition-all ease-linear duration-150 cursor-pointer"
         >
             <div 
-                className="flex justify-center items-center bg-[#D0E9ED] dark:bg-[#0C1120] shadow-md w-5 h-5 rounded-full -translate-x-3 dark:translate-x-3 transition-transform ease-in-out"
+                className="flex justify-center items-center bg-transparent dark:bg-[#0C1120] w-5 h-5 rounded-full -translate-x-3 dark:translate-x-3 transition-transform ease-in-out"
             >
                 <Image 
                     src={"/assets/LucideSun.svg"} 
