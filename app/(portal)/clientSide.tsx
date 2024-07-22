@@ -67,11 +67,6 @@ export default function ClientSide({
         <div
             className={`relative flex`}>
             {!isNavOn && (
-                <button
-                    title="Open Navbar"
-                    onClick={toggleNavbar}
-                    className="absolute top-4 left-4 z-50 opacity-100"
-                >
                     <Image
                         src="/assets/HamburgerIcon.svg"
                         alt="Menu"
@@ -79,7 +74,6 @@ export default function ClientSide({
                         height={30}
                         className="dark:invert-[.835] transition-transform transform-gpu hover:scale-110 hover:-translate-y-1"
                     />
-                </button>
             )}
             <div ref={navbarRef}>
                 <NavBar isNavOn={isNavOn} toggleNavbar={toggleNavbar} />
