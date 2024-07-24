@@ -31,7 +31,7 @@
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.411.0",
-    "next": "^14.2.4",
+    "next": "^14.2.5",
     "next-auth": "^5.0.0-beta.19",
     "nprogress": "^0.2.0",
     "react": "^18.3.1",

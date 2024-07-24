@@ -52,7 +52,9 @@ function performSearch(query: string, dataSet: PastPaperWithTags[]) {
 
 async function pastPaperPage({ searchParams }: { searchParams: { page?: string, search?: string, tags?: string | string[] } }) {
     const prisma = new PrismaClient();
-    const pageSize = 9;
+    const largePageSize = 9;
+    const mediumPageSize = 8;
+    const smallPageSize = 4;
     const search = searchParams.search || '';
     const page = parseInt(searchParams.page || '1', 10);
     const tags: string[] = Array.isArray(searchParams.tags)
@@ -86,13 +88,20 @@ async function pastPaperPage({ searchParams }: { searchParams: { page?: string, 
     }
 
     const totalCount = filteredPastPapers.length;
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const largeTotalPages = Math.ceil(totalCount / largePageSize);
+    const mediumTotalPages = Math.ceil(totalCount / mediumPageSize);
+    const smallTotalPages = Math.ceil(totalCount / smallPageSize);
 
-    const validatedPage = validatePage(page, totalPages);
+    const maxTotalPages = Math.max(largeTotalPages, mediumTotalPages, smallTotalPages);
+    const validatedPage = validatePage(page, maxTotalPages);
 
-    const startIndex = (validatedPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const paginatedPastPapers = filteredPastPapers.slice(startIndex, endIndex);
+    const largeStartIndex = (validatedPage - 1) * largePageSize;
+    const mediumStartIndex = (validatedPage - 1) * mediumPageSize;
+    const smallStartIndex = (validatedPage - 1) * smallPageSize;
+
+    const largePaginatedPastPapers = filteredPastPapers.slice(largeStartIndex, largeStartIndex + largePageSize);
+    const mediumPaginatedPastPapers = filteredPastPapers.slice(mediumStartIndex, mediumStartIndex + mediumPageSize);
+    const smallPaginatedPastPapers = filteredPastPapers.slice(smallStartIndex, smallStartIndex + smallPageSize);
 
     if (validatedPage !== page) {
         const searchQuery = search ? `&search=${encodeURIComponent(search)}` : '';
@@ -101,7 +110,7 @@ async function pastPaperPage({ searchParams }: { searchParams: { page?: string, 
     }
 
     return (
-        <div className="p-8 transition-colors flex flex-col min-h-screen items-center text-black dark:text-[#D5D5D5]">
+        <div className="p-4 sm:p-6 md:p-8 transition-colors flex flex-col min-h-screen items-center text-black dark:text-[#D5D5D5]">
             <h1 className="text-center mb-4">Past Papers</h1>
             <div className="hidden w-5/6 lg:w-1/2 md:flex items-center justify-center p-4 space-y-4 sm:space-y-0 sm:space-x-4 pt-2">
                 <Dropdown pageType='past_papers' />
@@ -117,12 +126,11 @@ async function pastPaperPage({ searchParams }: { searchParams: { page?: string, 
                 </div>
             </div>
 
-
             {tags.length > 0 && (
                 <div className="flex justify-center mb-4">
                     <div className="flex flex-wrap gap-2">
                         {tags.map((tag, index) => (
-                            <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                            <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
                                 {tag}
                             </span>
                         ))}
@@ -130,16 +138,28 @@ async function pastPaperPage({ searchParams }: { searchParams: { page?: string, 
                 </div>
             )}
 
-            <div className="flex justify-center">
-                <div className="w-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 p-6  place-content-center">
-                    {paginatedPastPapers.length > 0 ? (
-                        paginatedPastPapers.map((eachPaper, index) => (
-                            <div key={eachPaper.id} className="flex justify-center">
-                                <PastPaperCard pastPaper={eachPaper} index={index} />
+            <div className='flex justify-center w-full'>
+                <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 p-2 sm:p-4 place-items-center">
+                    {filteredPastPapers.length > 0 ? (
+                        <>
+                            <div className="hidden lg:contents">
+                                {largePaginatedPastPapers.map((eachPaper, index) => (
+                                    <PastPaperCard key={eachPaper.id} pastPaper={eachPaper} index={index} />
+                                ))}
                             </div>
-                        ))
+                            <div className="hidden sm:contents lg:hidden">
+                                {mediumPaginatedPastPapers.map((eachPaper, index) => (
+                                    <PastPaperCard key={eachPaper.id} pastPaper={eachPaper} index={index} />
+                                ))}
+                            </div>
+                            <div className="contents sm:hidden">
+                                {smallPaginatedPastPapers.map((eachPaper, index) => (
+                                    <PastPaperCard key={eachPaper.id} pastPaper={eachPaper} index={index} />
+                                ))}
+                            </div>
+                        </>
                     ) : (
-                        <p className="col-span-3 text-center">
+                        <p className="col-span-1 sm:col-span-2 lg:col-span-3 text-center">
                             {search || tags.length > 0
                                 ? "No past papers found matching your search or selected tags."
                                 : "No past papers found."}
@@ -147,11 +167,12 @@ async function pastPaperPage({ searchParams }: { searchParams: { page?: string, 
                     )}
                 </div>
             </div>
-            {totalPages > 1 && (
-                <div className="mt-4">
+
+            {maxTotalPages > 1 && (
+                <div className="mt-auto pt-4">
                     <Pagination
                         currentPage={validatedPage}
-                        totalPages={totalPages}
+                        totalPages={maxTotalPages}
                         basePath="/past_papers"
                         searchQuery={search}
                         tagsQuery={tags.join(',')}
