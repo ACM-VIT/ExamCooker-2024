@@ -170,22 +170,27 @@ const FavFetch: React.FC<FavFetchProps> = ({ items, activeTab }) => {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="flex flex-wrap justify-center w-fit space-x-2 sm:space-x-4 bg-[#82BEE9] dark:bg-[#232530] p-2 sm:p-2 mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => handleTabChange(tab)}
-            className={`px-1 py-1 sm:px-1 sm:py-1 text-sm sm:text-xs transition-colors duration-200 ${currentTab === tab ? 'bg-[#C2E6EC] dark:bg-[#0C1222] font-semibold' : 'hover:bg-[#ffffff]/10'
-              }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-      <div className="flex justify-center w-svw">
-        <div className="w-full md:w-3/4">
-          {renderContent()}
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow">
+        <div className="flex flex-col items-center">
+          <div className="flex flex-wrap justify-center w-fit space-x-2 sm:space-x-4 bg-[#82BEE9] dark:bg-[#232530] p-2 sm:p-2 mb-6">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => handleTabChange(tab)}
+                className={`px-1 py-1 sm:px-1 sm:py-1 text-sm sm:text-xs transition-colors duration-200 ${
+                  currentTab === tab ? 'bg-[#C2E6EC] dark:bg-[#0C1222] font-semibold' : 'hover:bg-[#ffffff]/10'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-center w-svw">
+            <div className="w-full md:w-3/4">
+              {renderContent()}
+            </div>
+          </div>
         </div>
       </div>
     </div>
