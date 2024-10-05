@@ -6,6 +6,7 @@ import Image from "next/image";
 import profile from "@/public/assets/Profile.svg";
 import { SignOut } from "./sign-out";
 import ThemeToggleSwitch from "./common/ThemeToggle";
+import { useRouter } from "next/navigation"; // Correct import for useRouter in App Router
 
 interface HeaderProps {
     toggleTheme: () => void;
@@ -16,9 +17,11 @@ const Header: React.FC<HeaderProps> = () => {
     const { data: session } = useSession();
     const [showOverlay, setShowOverlay] = useState(false);
     const overlayRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();  // useRouter hook from Next.js
 
     const handleClick = () => {
-        setShowOverlay(!showOverlay);
+        // Redirect to the profile page
+        router.push("/profile");  // This will navigate the user to the profile page
     };
 
     useEffect(() => {
@@ -56,7 +59,7 @@ const Header: React.FC<HeaderProps> = () => {
                        bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700
                        dark:from-blue-600 dark:to-blue-800 dark:hover:from-blue-700 dark:hover:to-blue-900
                        focus:ring-blue-400 dark:focus:ring-blue-700 focus:ring-offset-white dark:focus:ring-offset-[#0C1222]"
-                        onClick={handleClick}
+                        onClick={handleClick}  // Redirect to profile page on click
                     >
                         <Image
                             src={profile}
