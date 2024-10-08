@@ -1,7 +1,7 @@
 import React from 'react';
 import Fuse from 'fuse.js';
-import {PastPaper, PrismaClient, Tag} from "@prisma/client";
-import {redirect} from 'next/navigation';
+import { PastPaper, PrismaClient, Tag } from "@prisma/client";
+import { redirect } from 'next/navigation';
 import Pagination from '../../components/Pagination';
 import PastPaperCard from '../../components/PastPaperCard';
 import SearchBar from '../../components/SearchBar';
@@ -99,9 +99,9 @@ async function pastPaperPage({ searchParams }: { searchParams: { page?: string, 
     }
 
     return (
-        <div className="p-8 transition-colors flex flex-col min-h-screen items-center text-black dark:text-[#D5D5D5]">
+        <div className="p-8 transition-colors flex flex-col justify-center min-h-screen items-center text-black dark:text-[#D5D5D5]">
             <h1 className="text-center mb-4">Past Papers</h1>
-            <div className="hidden w-5/6 lg:w-1/2 md:flex items-center justify-center p-4 space-y-4 sm:space-y-0 sm:space-x-4 pt-2">
+            <div className="hidden w-5/6 lg:w-1/2 md:flex items-center p-4 space-y-4 sm:space-y-0 sm:space-x-4 pt-2">
                 <Dropdown pageType='past_papers' />
                 <SearchBar pageType="past_papers" initialQuery={search} />
                 <UploadButtonPaper />
@@ -109,11 +109,12 @@ async function pastPaperPage({ searchParams }: { searchParams: { page?: string, 
 
             <div className='flex-col w-5/6 md:hidden space-y-4'>
                 <SearchBar pageType="past_papers" initialQuery={search} />
-                <div className='flex justify-between'>
+                <div className='flex justify-between space-x-8'>
                     <Dropdown pageType='past_papers' />
                     <UploadButtonPaper />
                 </div>
             </div>
+
 
 
             {tags.length > 0 && (

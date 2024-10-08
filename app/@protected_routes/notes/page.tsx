@@ -110,7 +110,7 @@ async function notesPage({ searchParams }: { searchParams: { page?: string, sear
 
             <div className='flex-col w-5/6 md:hidden space-y-4'>
                 <SearchBar pageType="notes" initialQuery={search} />
-                <div className='flex justify-between'>
+                <div className='flex justify-between space-x-8 sm:space-x-12'>
                     <Dropdown pageType='notes' />
                     <UploadButtonNotes />
                 </div>

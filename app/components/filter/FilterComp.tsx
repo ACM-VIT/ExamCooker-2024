@@ -23,11 +23,11 @@ const FilterComp: React.FC<Props> = ({ title, options, onSelectionChange, select
   };
 
   return (
-    <div className="w-full sm:w-[182px] dark:bg-none p-4 text-center">
-      <h6 className="[text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] font-bold mb-2">{title}</h6>
-      <div className={`${'isSlotCategory' ? 'grid grid-cols-2 gap-x-2 gap-y-2 sm:gap-x-2 gap-y-2' : ''}`}>
+    <div className="w-full sm:w-auto dark:bg-none p-2 sm:p-4 text-center">
+      <h6 className="[text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] font-lg font-bold mb-2">{title}</h6>
+      <div className={`${'isSlotCategory' ? 'grid grid-cols-2 gap-4 sm:gap-x-2 gap-y-2' : ''}`}>
         {options.map((option) => (
-          <div key={option.id} className="flex items-center mb-2">
+          <div key={option.id} className="flex items-center mb-1 font-base">
             <input
               id={`checkbox-${option.id}`}
               type="checkbox"

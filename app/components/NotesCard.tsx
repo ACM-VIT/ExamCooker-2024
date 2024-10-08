@@ -38,7 +38,7 @@ function NotesCard({ note }: NotesCardProps) {
 
  <div className={`max-w-sm w-full h-full text-black dark:text-[#D5D5D5]`}>
     <div className="hover:shadow-xl px-5 py-6 w-full text-center bg-[#5FC4E7] dark:bg-[#ffffff]/10 lg:dark:bg-[#0C1222] dark:border-b-[#3BF4C7] dark:lg:border-b-[#ffffff]/20 dark:border-[#ffffff]/20 border-2 border-[#5FC4E7] hover:border-b-[#ffffff] hover:border-b-2 dark:hover:border-b-[#3BF4C7]  dark:hover:bg-[#ffffff]/10 transition duration-200 transform hover:scale-105 max-w-96 cursor-pointer " 
-    onClick={() => window.open(`/notes/${note.id}`, '_blank')}>
+        onClick={() => router.push(`/notes/${note.id}`)}>
         <div className="bg-[#d9d9d9] w-full h-44 relative overflow-hidden">
                     <img
                         className="w-full object-cover"
