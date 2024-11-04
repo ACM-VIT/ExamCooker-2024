@@ -1152,7 +1152,7 @@ export const WildlifeJSON = {
               "enhancement",
               "replacement"
             ],
-            "answer": "enhancement"
+            "answer": "replacement"
           }
         ]
       },
