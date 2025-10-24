@@ -1,21 +1,23 @@
 import React from "react";
 import {auth} from "@/app/auth";
-import {SessionProvider} from "next-auth/react";
-import ClientSide from "./clientSide";
-import {PrismaClient} from "@/src/generated/prisma";
-import BookmarksProvider from "@/app/components/BookmarksProvider";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
+import Providers from "./Providers";
+import type { ExtendedBookmark } from "./types";
 
 export default async function Layout({
                                          children,
                                      }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const prisma = new PrismaClient();
+    const session = await auth();
 
-    const session = (await auth())!;
+    if (!session?.user?.email) {
+        redirect("/");
+    }
 
     const user = await prisma.user.findUniqueOrThrow({
-        where: {email: session.user!.email!},
+        where: {email: session.user.email},
         include: {
             bookmarkedNotes: true,
             bookmarkedPastPapers: true,
@@ -35,7 +37,7 @@ export default async function Layout({
         },
     });
 
-    const initialBookmarks = [
+    const initialBookmarks: ExtendedBookmark[] = [
         ...user.bookmarkedNotes.map((note) => ({
             id: note.id,
             type: "note" as const,
@@ -73,12 +75,8 @@ export default async function Layout({
     ];
 
     return (
-        <SessionProvider>
-            <ClientSide>
-                <BookmarksProvider initialBookmarks={initialBookmarks}>
-                    {children}
-                </BookmarksProvider>
-            </ClientSide>
-        </SessionProvider>
+        <Providers session={session} initialBookmarks={initialBookmarks}>
+            {children}
+        </Providers>
     );
 }
