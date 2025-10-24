@@ -1,12 +1,13 @@
 import React from 'react';
 import Fuse from 'fuse.js';
-import {PastPaper, PrismaClient, Tag} from "@/src/generated/prisma";
+import {PastPaper, Tag} from "@/src/generated/prisma";
 import {redirect} from 'next/navigation';
 import Pagination from '../../components/Pagination';
 import PastPaperCard from '../../components/PastPaperCard';
 import SearchBar from '../../components/SearchBar';
 import UploadButtonPaper from '../../components/uploadButtonPaper';
 import Dropdown from '../../components/FilterComponent';
+import prisma from "@/lib/prisma";
 
 const SCORE_THRESHOLD = 0.6;
 
@@ -51,7 +52,6 @@ function performSearch(query: string, dataSet: PastPaperWithTags[]) {
 }
 
 async function pastPaperPage({ searchParams }: { searchParams: Promise<{ page?: string, search?: string, tags?: string | string[] }> }) {
-    const prisma = new PrismaClient();
     const pageSize = 9;
     const params = await searchParams;
     const search = params.search || '';

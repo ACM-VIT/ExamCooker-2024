@@ -1,7 +1,5 @@
-"use client";
 import LoadingSvg from "@/public/assets/Loader.svg"
 import Image from "next/image";
-import { useState } from "react";
 
 function getQuirkyLine() {
     const lines = [
@@ -12,15 +10,14 @@ function getQuirkyLine() {
         "Avoiding work by loading things...",
         "Brewing up a page just for you...",
         "Procrastinating by making you wait for this load...",
-    ]
-
+    ];
 
     return lines[Math.floor(Math.random() * lines.length)];
 }
 
 export default function Loading() {
-
-    const [line, setLine] = useState(getQuirkyLine())
+    // Don't use client-only hooks here so the loading component remains a server component
+    const line = getQuirkyLine();
 
     return (
         <div
