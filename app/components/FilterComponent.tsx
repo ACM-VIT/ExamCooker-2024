@@ -15,6 +15,7 @@ interface CheckboxOptions {
     courses?: Option[];
     slots?: Option[];
     years?: Option[];
+    examTypes?: Option[];
 }
 
 interface DropdownProps {
@@ -76,7 +77,12 @@ const Dropdown: React.FC<DropdownProps> = ({ pageType }) => {
             { id: 'G1', label: 'G1' },
             { id: 'G2', label: 'G2' },
 
-        ], 
+        ],
+        examTypes: [
+            { id: 'cat1', label: 'CAT-1' },
+            { id: 'cat2', label: 'CAT-2' },
+            { id: 'fat', label: 'FAT' },
+        ]
     };
 
     const handleSelectionChange = useCallback((category: keyof CheckboxOptions, selection: string[]) => {
@@ -106,14 +112,24 @@ const Dropdown: React.FC<DropdownProps> = ({ pageType }) => {
                 {isOpen ? <FontAwesomeIcon icon={faCaretUp} className="ml-2" /> : <FontAwesomeIcon icon={faCaretDown} className="ml-2" />}
             </button>
             <div className={`hide-scrollbar flex flex-col sm:flex-row sm:space-x-4 justify-center items-start absolute left-0 mt-2 w-full w-[80vw] sm:w-auto sm:max-w-[1200px] border-2 border-black dark:border-white bg-[#4AD0FF] dark:bg-[#232530] z-50 overflow-auto ${isOpen ? '' : 'hidden'}`}>
-            {checkboxOptions.slots && (
-                <div className="w-full p-4 sm:p-2 flex flex-wrap justify-center font-bold">
+                {checkboxOptions.slots && (
+                    <div className="w-full p-4 sm:p-2 flex flex-wrap justify-center font-bold">
                         <FilterComp
                             title="Slots"
                             options={checkboxOptions.slots}
                             onSelectionChange={(selection) => handleSelectionChange('slots', selection)}
                             selectedOptions={selectedTags.filter(tag => checkboxOptions.slots!.some(option => option.label === tag))}
                             isSlotCategory={true}
+                        />
+                    </div>
+                )}
+                {checkboxOptions.examTypes && (
+                    <div className="w-full p-4 sm:p-2 flex flex-wrap justify-center font-bold">
+                        <FilterComp
+                            title="Exam Type"
+                            options={checkboxOptions.examTypes}
+                            onSelectionChange={(selection) => handleSelectionChange('examTypes', selection)}
+                            selectedOptions={selectedTags.filter(tag => checkboxOptions.examTypes!.some(option => option.label === tag))}
                         />
                     </div>
                 )}
